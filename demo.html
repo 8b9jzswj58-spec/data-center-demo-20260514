@@ -8,14 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet" />
   <style>
-    :root { --bg:#f7f7f7; --text:#000; --aux:rgba(0,0,0,.4); --line:rgba(0,0,0,.05); --card:#fff; --pill:rgba(0,0,0,.03); --purple:#4b2cb3; --purple-soft:rgba(132,111,254,.1); --green:#22c58b; --danger:#9c283a; --bubble-bg:#e5defe; --bubble-fg:#4b2cb3; }
+    :root { --bg:#f7f7f7; --text:#000; --aux:rgba(0,0,0,.4); --line:rgba(0,0,0,.05); --card:#fff; --pill:rgba(0,0,0,.03); --purple:#4b2cb3; --purple-soft:rgba(132,111,254,.1); --green:#22c58b; --danger:#9c283a; --bubble-bg:#e5defe; --bubble-fg:#4b2cb3; --active-color:#6f63ff; }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",sans-serif}
     .phone{width:402px;max-width:100vw;height:100vh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
     .top{position:sticky;top:0;z-index:20;background:var(--bg);padding-bottom:0}
     .top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:10px;background:var(--bg);pointer-events:none;z-index:8}
-    .status{height:62px;padding:21px 24px 19px;display:flex;justify-content:space-between;align-items:center;font-size:17px;font-weight:590}
-    .status-icons{letter-spacing:1px;font-size:14px}
     .nav{height:60px;padding:10px;display:flex;justify-content:space-between;align-items:center}
     .icon-btn{width:40px;height:40px;border:0;background:transparent;display:grid;place-items:center;position:relative;color:rgba(0,0,0,.8)}
     .nav-right{display:flex}
@@ -24,7 +22,7 @@
     .level-tabs button{position:relative;border:0;background:transparent;color:var(--aux);font-size:17px;font-weight:500;line-height:1;display:flex;align-items:flex-end;justify-content:center;padding:0 0 12px}
     .level-tabs button.active{color:#111}
     .level-tabs button.active::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:46px;height:3px;background:#111;z-index:2}
-    .scores-wrap{position:absolute;left:0;right:0;top:calc(62px + 60px + 56px);height:124px;padding:18px 16px 0;background:linear-gradient(180deg,var(--bg) 0%,rgba(247,247,247,.94) 70%,rgba(247,247,247,0) 100%);z-index:12;transition:padding .28s ease,height .28s ease}
+    .scores-wrap{position:absolute;left:0;right:0;top:calc(60px + 56px);height:124px;padding:18px 16px 0;background:linear-gradient(180deg,var(--bg) 0%,rgba(247,247,247,.94) 70%,rgba(247,247,247,0) 100%);z-index:12;transition:padding .28s ease,height .28s ease}
     .scores{position:relative;display:grid;grid-template-columns:repeat(3,1fr);height:106px;align-items:center;transition:height .28s ease}
     .score-indicator{position:absolute;top:50%;height:40px;border-radius:999px;background:rgba(232,232,232,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transform:translate3d(0,-50%,0);opacity:0;pointer-events:none;transition:transform .42s cubic-bezier(.22,.61,.36,1),width .42s cubic-bezier(.22,.61,.36,1),opacity .2s ease}
     .score-slot{position:relative;z-index:1;display:flex;justify-content:center;align-items:center}
@@ -46,12 +44,18 @@
     .score-lg-ring{position:relative;width:100px;height:100px}
     .score-lg-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
     .score-name{font-size:12px;font-weight:500;line-height:1;display:flex;align-items:center;gap:2px}
-    .score-value-lg{display:inline;font-size:24px;font-weight:800;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif}
+    .score-value-lg{display:inline;font-size:24px;font-weight:800;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif;color:#111}
+    .score-value-roll{position:relative;display:inline-grid;overflow:hidden;height:1em}
+    .score-value-roll > span{grid-area:1/1;transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .28s ease}
+    .score-value-roll .base{transform:translateY(0);opacity:1}
+    .score-value-roll .boosted{transform:translateY(105%);opacity:0}
+    .score-value-roll.is-boost .base{transform:translateY(-105%);opacity:0}
+    .score-value-roll.is-boost .boosted{transform:translateY(0);opacity:1}
     .score-sm-wrap{display:flex;align-items:center;justify-content:center;gap:10px;min-width:94px;height:40px}
     .score-sm-ring{position:relative;width:28px;height:28px}
     .score-sm-ring .ring-track,.score-sm-ring .ring-prog{stroke-width:9.2}
-    .score-sm-value{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif}
-    .score-label-sm{display:inline;font-size:15px;font-weight:600;line-height:1}
+    .score-sm-value{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif;color:#111}
+    .score-label-sm{display:inline;font-size:15px;font-weight:600;line-height:1;color:#111}
     .score-mark{font-size:14px;line-height:1;color:#111;margin-left:1px}
     .score-menu-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px}
     .score-menu{position:absolute;inset:0;opacity:0;width:12px;height:12px;border:0;appearance:auto;cursor:pointer}
@@ -65,15 +69,15 @@
     .compact .score-state-sm{opacity:1;transform:translateY(0)}
     .compact .score-mark{display:none}
     .compact .score-menu-wrap{display:none}
-    .boost .score-slot.active .score-name,.boost .score-slot.active .score-value-lg,.boost .score-slot.active .score-label-sm{color:var(--purple)}
-    .bubble-wrap{position:absolute;left:16px;right:16px;top:calc(62px + 60px + 56px + 24px + 124px + 4px);z-index:30;opacity:0;transform:translateY(-8px) scale(.98);pointer-events:none;transition:opacity .36s cubic-bezier(.22,.61,.36,1),transform .42s cubic-bezier(.22,.61,.36,1),top .32s cubic-bezier(.22,.61,.36,1)}
+    .boost .score-slot.active .score-name,.boost .score-slot.active .score-value-lg,.boost .score-slot.active .score-label-sm,.boost .score-slot.active .score-sm-value{color:var(--active-color)}
+    .bubble-wrap{position:absolute;left:16px;right:16px;top:calc(60px + 56px + 24px + 124px + 4px);z-index:30;opacity:0;transform:translateY(-8px) scale(.98);pointer-events:none;transition:opacity .36s cubic-bezier(.22,.61,.36,1),transform .42s cubic-bezier(.22,.61,.36,1),top .32s cubic-bezier(.22,.61,.36,1)}
     .bubble-wrap.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
     .bubble-arrow{width:12px;height:7px;margin-left:31px;background:var(--bubble-bg);clip-path:polygon(50% 0,100% 100%,0 100%);transition:margin-left .22s ease}
     .bubble{height:40px;border-radius:999px;background:var(--bubble-bg);display:flex;align-items:center;gap:10px;padding:10px 6px 10px 16px}
-    .compact .bubble-wrap{top:calc(62px + 60px + 56px + 8px + 48px + 4px)}
+    .compact .bubble-wrap{top:calc(60px + 56px + 8px + 48px + 4px)}
     .bubble-text{flex:1;font-size:12px;font-weight:500;color:var(--bubble-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .bubble-btn{height:28px;border-radius:999px;border:0;background:#fff;display:flex;align-items:center;gap:4px;padding:0 10px;font-size:12px;font-weight:500;line-height:1}
-    .bubble-btn .material-symbols-rounded{font-size:16px}
+    .bubble-btn{height:28px;border-radius:999px;border:0;background:#fff;display:flex;align-items:center;gap:4px;padding:0 10px;font-size:12px;font-weight:500;line-height:1;color:#111}
+    .bubble-btn .material-symbols-rounded{font-size:16px;color:#111}
     .content{flex:1;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;padding-top:140px}
     .content::-webkit-scrollbar{display:none}
     .slider{display:grid;grid-auto-flow:column;grid-auto-columns:100%;overflow-x:auto;scroll-snap-type:x mandatory}
@@ -107,7 +111,7 @@
   </style>
 </head>
 <body>
-<div class="phone" id="app"><div class="top"><div class="status"><div>9:41</div><div class="status-icons">◔◔◓</div></div><div class="nav"><button class="icon-btn"><span class="material-symbols-rounded">menu</span></button><div class="nav-right"><button class="icon-btn"><span class="material-symbols-rounded">watch</span></button><button class="icon-btn"><span class="material-symbols-rounded">qr_code_scanner</span></button><button class="icon-btn"><span class="material-symbols-rounded">mail</span><span class="badge-dot"></span></button></div></div><div class="level-tabs"><button class="active">数据概览</button><button>全部数据</button><button>运动记录</button></div><div class="scores-wrap"><div class="scores" id="scores"></div></div><div class="bubble-wrap" id="bubbleWrap"><div class="bubble-arrow"></div><div class="bubble"><div class="bubble-text" id="bubbleText">✦ 完成行动，预计增加 11 分</div><button class="bubble-btn"><span class="material-symbols-rounded">calendar_add_on</span>全部添加</button></div></div></div><div class="content" id="content"><div class="slider" id="slider"></div></div><div class="bottom"><span>首页</span><span>日程</span><span>运动</span><span>发现</span><span class="active">我的</span></div></div>
+<div class="phone" id="app"><div class="top"><div class="nav"><button class="icon-btn"><span class="material-symbols-rounded">menu</span></button><div class="nav-right"><button class="icon-btn"><span class="material-symbols-rounded">watch</span></button><button class="icon-btn"><span class="material-symbols-rounded">qr_code_scanner</span></button><button class="icon-btn"><span class="material-symbols-rounded">mail</span><span class="badge-dot"></span></button></div></div><div class="level-tabs"><button class="active">数据概览</button><button>全部数据</button><button>运动记录</button></div><div class="scores-wrap"><div class="scores" id="scores"></div></div><div class="bubble-wrap" id="bubbleWrap"><div class="bubble-arrow"></div><div class="bubble"><div class="bubble-text" id="bubbleText">✦ 完成行动，预计增加 11 分</div><button class="bubble-btn"><span class="material-symbols-rounded">calendar_add_on</span>全部添加</button></div></div></div><div class="content" id="content"><div class="slider" id="slider"></div></div><div class="bottom"><span>首页</span><span>日程</span><span>运动</span><span>发现</span><span class="active">我的</span></div></div>
 <script>
 const tabs=[{name:'健康',score:69,predict:80,color:'#6f63ff',pct:69},{name:'减脂',score:66,predict:73,color:'#21bf88',pct:66},{name:'习惯',score:71,predict:82,color:'#4d7deb',pct:71}];
 const factors={健康:[['nights_stay','睡眠时长','7 小时 25 分钟','+14 分'],['favorite','静息心率','74 次/分','+9 分'],['favorite','HRV','35 毫秒','-11 分'],['favorite','睡眠评分','71 分','+8 分'],['water_drop','血氧饱和度','96 %','+10 分'],['square','BMI','24.9','-7 分'],['square','体脂率','34.0 %','+6 分'],['favorite','HRV','35 毫秒','-5 分']],减脂:[['monitor_weight','体重变化','65.2 kg','+16 分'],['restaurant','脂肪摄入','92 g','+11 分'],['local_fire_department','热量缺口','410 kcal','-13 分'],['directions_run','有氧时长','42 分钟','+12 分'],['fitness_center','力量训练','28 分钟','+9 分'],['schedule','作息稳定','5 天','+8 分'],['water_drop','饮水量','1.8 L','+7 分'],['monitor_heart','心率恢复','一般','-6 分']],习惯:[['alarm','按时入睡','5 天','+13 分'],['water_drop','饮水频次','7 次','+10 分'],['self_improvement','复盘','4 次','-8 分'],['directions_run','晨练','3 次','+11 分'],['restaurant','早餐完成','6 天','+9 分'],['done_all','打卡率','82 %','+12 分'],['mood','状态稳定','74 分','+8 分'],['favorite','HRV','38 毫秒','-7 分']]};
@@ -118,12 +122,12 @@ const actionKeyByIndex=['健康','减脂','习惯'];
 function getActionGain(idx){const list=actions[actionKeyByIndex[idx]]||[];return list.reduce((s,row)=>{const m=String(row[3]||'').match(/([+-]?\d+)/);return s+(m?Number(m[1]):0);},0);}
 function hexToRgba(hex,a){const h=String(hex||'').replace('#','');if(h.length!==6)return `rgba(132,111,254,${a})`;const n=parseInt(h,16);const r=(n>>16)&255;const g=(n>>8)&255;const b=n&255;return `rgba(${r},${g},${b},${a})`;}
 function tintHex(hex,t=0.84){const h=String(hex||'').replace('#','');if(h.length!==6)return '#e5defe';const n=parseInt(h,16);const r=(n>>16)&255;const g=(n>>8)&255;const b=n&255;const rr=Math.round(r+(255-r)*t);const gg=Math.round(g+(255-g)*t);const bb=Math.round(b+(255-b)*t);return `rgb(${rr}, ${gg}, ${bb})`;}
-function updateBubbleTheme(){const c=tabs[active]?.color||'#6f63ff';app.style.setProperty('--bubble-bg',tintHex(c,.84));app.style.setProperty('--bubble-fg',hexToRgba(c,.92));}
+function updateBubbleTheme(){const c=tabs[active]?.color||'#6f63ff';app.style.setProperty('--active-color',c);app.style.setProperty('--bubble-bg',tintHex(c,.84));app.style.setProperty('--bubble-fg',hexToRgba(c,.92));}
 async function initHaptics(){try{const mod=await import('https://cdn.jsdelivr.net/npm/web-haptics/+esm');haptics=new mod.WebHaptics({debug:false,showSwitch:false});}catch{}}
 function triggerTabHaptic(){if(haptics){haptics.trigger('nudge');return;}if(navigator.vibrate){navigator.vibrate(18);}}
 function setActiveTab(i,{haptic=false}={}){if(i===active)return;active=i;if(haptic)triggerTabHaptic();playActiveRingBounce();}
 function getNearestPanelIndex(){const w=slider.clientWidth||1;const raw=(slider.scrollLeft/w);const idx=Math.floor(raw+0.5);return Math.max(0,Math.min(tabs.length-1,idx));}
-function buildScores(){scores.innerHTML='';scoreIndicator=document.createElement('div');scoreIndicator.className='score-indicator';scores.appendChild(scoreIndicator);tabs.forEach((t,i)=>{const menu=i===1?`<span class="score-menu-wrap"><span class="material-symbols-rounded score-mark" aria-hidden="true">keyboard_arrow_down</span><select class="score-menu" aria-label="减脂模式" data-role="fat-menu"><option>减脂</option><option>增肌</option><option>提示跑步能力</option></select></span>`:'';const ring=`<svg class="ring-svg" viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="45"></circle><circle class="ring-prog" cx="50" cy="50" r="45" style="--pct:${t.pct};--c:${t.color}"></circle></svg>`;const slot=document.createElement('div');slot.className='score-slot';slot.innerHTML=`<button class="score-tab" style="--c:${t.color}"><span class="score-state-lg"><span class="score-lg-ring">${ring}<span class="score-lg-text"><span class="score-name"><span class="score-label">${t.name}</span>${menu}</span><span class="score-value-lg">${t.score}</span></span></span></span><span class="score-state-sm"><span class="score-sm-wrap"><span class="score-sm-ring">${ring}<span class="score-sm-value">${t.score}</span></span><span class="score-label-sm">${t.name}</span></span></span></button>`;slot.onclick=()=>{programmaticTarget=i;setActiveTab(i,{haptic:true});slider.scrollTo({left:slider.clientWidth*i,behavior:'smooth'});applyState();};scores.appendChild(slot);scoreRefs.push({slot,progs:slot.querySelectorAll('.ring-prog'),tab:slot.querySelector('.score-tab')});const select=slot.querySelector('[data-role=\"fat-menu\"]');if(select){select.addEventListener('click',(e)=>e.stopPropagation());select.addEventListener('change',(e)=>{const v=e.target.value;if(v==='增肌'){tabs[1].name='增肌';}else if(v==='提示跑步能力'){tabs[1].name='跑步能力';}else{tabs[1].name='减脂';}const labelNode=slot.querySelector('.score-label');const smallLabelNode=slot.querySelector('.score-label-sm');if(labelNode){labelNode.textContent=tabs[1].name;}if(smallLabelNode){smallLabelNode.textContent=tabs[1].name;} });}});}
+function buildScores(){scores.innerHTML='';scoreIndicator=document.createElement('div');scoreIndicator.className='score-indicator';scores.appendChild(scoreIndicator);tabs.forEach((t,i)=>{const menu=i===1?`<span class="score-menu-wrap"><span class="material-symbols-rounded score-mark" aria-hidden="true">keyboard_arrow_down</span><select class="score-menu" aria-label="减脂模式" data-role="fat-menu"><option>减脂</option><option>增肌</option><option>提示跑步能力</option></select></span>`:'';const ring=`<svg class="ring-svg" viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="45"></circle><circle class="ring-prog" cx="50" cy="50" r="45" style="--pct:${t.pct};--c:${t.color}"></circle></svg>`;const slot=document.createElement('div');slot.className='score-slot';slot.innerHTML=`<button class="score-tab" style="--c:${t.color}"><span class="score-state-lg"><span class="score-lg-ring">${ring}<span class="score-lg-text"><span class="score-name"><span class="score-label">${t.name}</span>${menu}</span><span class="score-value-lg score-value-roll" data-role="roll-lg"><span class="base">${t.score}</span><span class="boosted">${t.score}</span></span></span></span></span><span class="score-state-sm"><span class="score-sm-wrap"><span class="score-sm-ring">${ring}<span class="score-sm-value score-value-roll" data-role="roll-sm"><span class="base">${t.score}</span><span class="boosted">${t.score}</span></span></span><span class="score-label-sm">${t.name}</span></span></span></button>`;slot.onclick=()=>{programmaticTarget=i;setActiveTab(i,{haptic:true});slider.scrollTo({left:slider.clientWidth*i,behavior:'smooth'});applyState();};scores.appendChild(slot);scoreRefs.push({slot,progs:slot.querySelectorAll('.ring-prog'),tab:slot.querySelector('.score-tab')});const select=slot.querySelector('[data-role=\"fat-menu\"]');if(select){select.addEventListener('click',(e)=>e.stopPropagation());select.addEventListener('change',(e)=>{const v=e.target.value;if(v==='增肌'){tabs[1].name='增肌';}else if(v==='提示跑步能力'){tabs[1].name='跑步能力';}else{tabs[1].name='减脂';}const labelNode=slot.querySelector('.score-label');const smallLabelNode=slot.querySelector('.score-label-sm');if(labelNode){labelNode.textContent=tabs[1].name;}if(smallLabelNode){smallLabelNode.textContent=tabs[1].name;} });}});}
 function updateIndicator(){if(!scoreIndicator)return;const compact=app.classList.contains('compact');if(!compact){scoreIndicator.style.opacity='0';return;}const rootRect=scores.getBoundingClientRect();const slotRect=scoreRefs[active].slot.getBoundingClientRect();const width=Math.max(92,slotRect.width-14);const x=(slotRect.left-rootRect.left)+(slotRect.width-width)/2;scoreIndicator.style.width=`${width}px`;scoreIndicator.style.transform=`translate3d(${x}px,-50%,0)`;scoreIndicator.style.opacity='1';}
 function updateScores(boost=false){
   scoreRefs.forEach((ref,i)=>{
@@ -132,10 +136,18 @@ function updateScores(boost=false){
     const nextScore=Math.min(100,tabs[i].score+gain);
     const pct=Math.min(100,tabs[i].pct+gain);
     ref.progs.forEach((p)=>p.style.setProperty('--pct',String(pct)));
-    const lg=ref.slot.querySelector('.score-value-lg');
-    const sm=ref.slot.querySelector('.score-sm-value');
-    if(lg)lg.textContent=String(nextScore);
-    if(sm)sm.textContent=String(nextScore);
+    const rollLg=ref.slot.querySelector('[data-role="roll-lg"]');
+    const rollSm=ref.slot.querySelector('[data-role="roll-sm"]');
+    const lgBase=rollLg?.querySelector('.base');
+    const lgBoost=rollLg?.querySelector('.boosted');
+    const smBase=rollSm?.querySelector('.base');
+    const smBoost=rollSm?.querySelector('.boosted');
+    if(lgBase)lgBase.textContent=String(tabs[i].score);
+    if(smBase)smBase.textContent=String(tabs[i].score);
+    if(lgBoost)lgBoost.textContent=String(nextScore);
+    if(smBoost)smBoost.textContent=String(nextScore);
+    rollLg?.classList.toggle('is-boost',boost&&i===active);
+    rollSm?.classList.toggle('is-boost',boost&&i===active);
   });
   updateIndicator();
 }
