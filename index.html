@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数据中心 Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0" rel="stylesheet" />
+  <style>
+    :root { --bg:#f7f7f7; --text:#000; --aux:rgba(0,0,0,.4); --line:rgba(0,0,0,.05); --card:#fff; --pill:rgba(0,0,0,.03); --purple:#4b2cb3; --purple-soft:rgba(132,111,254,.1); --green:#22c58b; --danger:#9c283a; --bubble-bg:#e5defe; --bubble-fg:#4b2cb3; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",sans-serif}
+    .phone{width:402px;max-width:100vw;height:100vh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+    .top{position:sticky;top:0;z-index:20;background:var(--bg);padding-bottom:0}
+    .top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:10px;background:var(--bg);pointer-events:none;z-index:8}
+    .status{height:62px;padding:21px 24px 19px;display:flex;justify-content:space-between;align-items:center;font-size:17px;font-weight:590}
+    .status-icons{letter-spacing:1px;font-size:14px}
+    .nav{height:60px;padding:10px;display:flex;justify-content:space-between;align-items:center}
+    .icon-btn{width:40px;height:40px;border:0;background:transparent;display:grid;place-items:center;position:relative;color:rgba(0,0,0,.8)}
+    .nav-right{display:flex}
+    .badge-dot{width:7px;height:7px;border-radius:50%;background:#ff4f4f;position:absolute;top:8px;right:8px}
+    .level-tabs{height:56px;border-bottom:.5px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);position:relative;z-index:15}
+    .level-tabs button{position:relative;border:0;background:transparent;color:var(--aux);font-size:17px;font-weight:500;line-height:1;display:flex;align-items:flex-end;justify-content:center;padding:0 0 12px}
+    .level-tabs button.active{color:#111}
+    .level-tabs button.active::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:46px;height:3px;background:#111;z-index:2}
+    .scores-wrap{position:absolute;left:0;right:0;top:calc(62px + 60px + 56px);height:124px;padding:18px 16px 0;background:linear-gradient(180deg,var(--bg) 0%,rgba(247,247,247,.94) 70%,rgba(247,247,247,0) 100%);z-index:12;transition:padding .28s ease,height .28s ease}
+    .scores{position:relative;display:grid;grid-template-columns:repeat(3,1fr);height:106px;align-items:center;transition:height .28s ease}
+    .score-indicator{position:absolute;top:50%;height:40px;border-radius:999px;background:rgba(232,232,232,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transform:translate3d(0,-50%,0);opacity:0;pointer-events:none;transition:transform .42s cubic-bezier(.22,.61,.36,1),width .42s cubic-bezier(.22,.61,.36,1),opacity .2s ease}
+    .score-slot{position:relative;z-index:1;display:flex;justify-content:center;align-items:center}
+    .score-tab{border:0;background:transparent;width:108px;height:100px;border-radius:100px;position:relative;padding:0}
+    .score-tab.bounce{animation:ring-bounce .64s cubic-bezier(.18,.72,.22,1)}
+    @keyframes ring-bounce{
+      0%{transform:translateY(0) scale(1)}
+      32%{transform:translateY(-2px) scale(1.025)}
+      66%{transform:translateY(.5px) scale(.996)}
+      100%{transform:translateY(0) scale(1)}
+    }
+    .ring-svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+    .ring-track,.ring-prog{fill:none;stroke-width:5;cx:50;cy:50;r:45}
+    .ring-track{stroke:#ececec}
+    .ring-prog{stroke:var(--c);stroke-linecap:butt;stroke-dasharray:282.743;stroke-dashoffset:calc(282.743 * (1 - (var(--pct) / 100)));transition:stroke-dashoffset .25s ease}
+    .score-state-lg,.score-state-sm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .24s ease,transform .24s ease}
+    .score-state-lg{opacity:1;transform:translateY(0)}
+    .score-state-sm{opacity:0;transform:translateY(4px)}
+    .score-lg-ring{position:relative;width:100px;height:100px}
+    .score-lg-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+    .score-name{font-size:12px;font-weight:500;line-height:1;display:flex;align-items:center;gap:2px}
+    .score-value-lg{display:inline;font-size:24px;font-weight:800;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif}
+    .score-sm-wrap{display:flex;align-items:center;justify-content:center;gap:10px;min-width:94px;height:40px}
+    .score-sm-ring{position:relative;width:28px;height:28px}
+    .score-sm-ring .ring-track,.score-sm-ring .ring-prog{stroke-width:9.2}
+    .score-sm-value{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif}
+    .score-label-sm{display:inline;font-size:15px;font-weight:600;line-height:1}
+    .score-mark{font-size:14px;line-height:1;color:#111;margin-left:1px}
+    .score-menu-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px}
+    .score-menu{position:absolute;inset:0;opacity:0;width:12px;height:12px;border:0;appearance:auto;cursor:pointer}
+    .score-val{font-size:24px;font-weight:800;letter-spacing:.48px;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif}
+    .compact .top{padding-bottom:0}
+    .compact .scores-wrap{padding-top:10px;height:64px}
+    .compact .scores{height:48px}
+    .compact .score-indicator{opacity:1}
+    .compact .score-tab{width:100%;height:48px}
+    .compact .score-state-lg{opacity:0;transform:translateY(-4px)}
+    .compact .score-state-sm{opacity:1;transform:translateY(0)}
+    .compact .score-mark{display:none}
+    .compact .score-menu-wrap{display:none}
+    .boost .score-slot.active .score-name,.boost .score-slot.active .score-value-lg,.boost .score-slot.active .score-label-sm{color:var(--purple)}
+    .bubble-wrap{position:absolute;left:16px;right:16px;top:calc(62px + 60px + 56px + 24px + 124px + 4px);z-index:30;opacity:0;transform:translateY(-8px) scale(.98);pointer-events:none;transition:opacity .36s cubic-bezier(.22,.61,.36,1),transform .42s cubic-bezier(.22,.61,.36,1),top .32s cubic-bezier(.22,.61,.36,1)}
+    .bubble-wrap.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+    .bubble-arrow{width:12px;height:7px;margin-left:31px;background:var(--bubble-bg);clip-path:polygon(50% 0,100% 100%,0 100%);transition:margin-left .22s ease}
+    .bubble{height:40px;border-radius:999px;background:var(--bubble-bg);display:flex;align-items:center;gap:10px;padding:10px 6px 10px 16px}
+    .compact .bubble-wrap{top:calc(62px + 60px + 56px + 8px + 48px + 4px)}
+    .bubble-text{flex:1;font-size:12px;font-weight:500;color:var(--bubble-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bubble-btn{height:28px;border-radius:999px;border:0;background:#fff;display:flex;align-items:center;gap:4px;padding:0 10px;font-size:12px;font-weight:500;line-height:1}
+    .bubble-btn .material-symbols-rounded{font-size:16px}
+    .content{flex:1;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;padding-top:140px}
+    .content::-webkit-scrollbar{display:none}
+    .slider{display:grid;grid-auto-flow:column;grid-auto-columns:100%;overflow-x:auto;scroll-snap-type:x mandatory}
+    .slider::-webkit-scrollbar{display:none}
+    .panel{scroll-snap-align:start;padding:0 16px 16px}
+    .panel-tail{height:var(--tail-h,0px)}
+    .section-title{padding:20px 8px 8px;font-size:12px;font-weight:500;color:var(--aux)}
+    .factors{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .factor-card{background:var(--card);border-radius:2px;padding:14px;min-height:68px;display:flex;justify-content:space-between;align-items:flex-end}
+    .factor-left{display:flex;flex-direction:column;gap:10px}
+    .factor-type{display:flex;align-items:center;gap:2px;opacity:.4;font-size:12px;font-weight:500}
+    .factor-type .material-symbols-rounded{font-size:16px}
+    .factor-val{font-size:15px;line-height:14px;font-weight:700;white-space:nowrap}
+    .delta{height:19px;border-radius:2px;padding:1px 4px;font-size:12px;line-height:17px}
+    .delta.plus{background:rgba(0,0,0,.04);color:rgba(0,0,0,.48)}
+    .delta.minus{background:rgba(156,40,58,.06);color:var(--danger)}
+    .more{margin-top:8px;height:48px;border-radius:2px;background:#fff;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600}
+    .actions{background:#fff;border-radius:2px;padding:8px 0}
+    .action-row{display:flex;align-items:center;padding:0 20px 0 16px}
+    .action-row + .action-row .action-main{border-top:.5px solid var(--line)}
+    .action-icon{width:40px;height:40px;border-radius:999px;background:rgba(0,0,0,.03);display:grid;place-items:center;margin-right:16px;font-size:20px}
+    .action-main{flex:1;display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .action-title{font-size:14px;line-height:1.2}
+    .action-tag{display:inline-block;margin-top:4px;border-radius:2px;padding:1px 4px;font-size:12px;color:rgba(0,0,0,.48);background:rgba(0,0,0,.04)}
+    .action-btn{height:28px;border:0;border-radius:999px;background:var(--green);color:#fff;padding:0 12px;font-size:12px;font-weight:500;line-height:1;white-space:nowrap}
+    .ai-footer{text-align:center;padding:16px;font-size:13px;color:rgba(0,0,0,.2)}
+    .bottom{height:83px;background:#fff;display:grid;grid-template-columns:repeat(5,1fr);align-items:flex-start;padding-top:14px}
+    .bottom span{font-size:18px;transform:none;font-weight:500;color:var(--aux);line-height:1;text-align:center}
+    .bottom span.active{color:#111}
+    .material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;font-size:22px}
+  </style>
+</head>
+<body>
+<div class="phone" id="app"><div class="top"><div class="status"><div>9:41</div><div class="status-icons">◔◔◓</div></div><div class="nav"><button class="icon-btn"><span class="material-symbols-rounded">menu</span></button><div class="nav-right"><button class="icon-btn"><span class="material-symbols-rounded">watch</span></button><button class="icon-btn"><span class="material-symbols-rounded">qr_code_scanner</span></button><button class="icon-btn"><span class="material-symbols-rounded">mail</span><span class="badge-dot"></span></button></div></div><div class="level-tabs"><button class="active">数据概览</button><button>全部数据</button><button>运动记录</button></div><div class="scores-wrap"><div class="scores" id="scores"></div></div><div class="bubble-wrap" id="bubbleWrap"><div class="bubble-arrow"></div><div class="bubble"><div class="bubble-text" id="bubbleText">✦ 完成行动，预计增加 11 分</div><button class="bubble-btn"><span class="material-symbols-rounded">calendar_add_on</span>全部添加</button></div></div></div><div class="content" id="content"><div class="slider" id="slider"></div></div><div class="bottom"><span>首页</span><span>日程</span><span>运动</span><span>发现</span><span class="active">我的</span></div></div>
+<script>
+const tabs=[{name:'健康',score:69,predict:80,color:'#6f63ff',pct:69},{name:'减脂',score:66,predict:73,color:'#21bf88',pct:66},{name:'习惯',score:71,predict:82,color:'#4d7deb',pct:71}];
+const factors={健康:[['nights_stay','睡眠时长','7 小时 25 分钟','+14 分'],['favorite','静息心率','74 次/分','+9 分'],['favorite','HRV','35 毫秒','-11 分'],['favorite','睡眠评分','71 分','+8 分'],['water_drop','血氧饱和度','96 %','+10 分'],['square','BMI','24.9','-7 分'],['square','体脂率','34.0 %','+6 分'],['favorite','HRV','35 毫秒','-5 分']],减脂:[['monitor_weight','体重变化','65.2 kg','+16 分'],['restaurant','脂肪摄入','92 g','+11 分'],['local_fire_department','热量缺口','410 kcal','-13 分'],['directions_run','有氧时长','42 分钟','+12 分'],['fitness_center','力量训练','28 分钟','+9 分'],['schedule','作息稳定','5 天','+8 分'],['water_drop','饮水量','1.8 L','+7 分'],['monitor_heart','心率恢复','一般','-6 分']],习惯:[['alarm','按时入睡','5 天','+13 分'],['water_drop','饮水频次','7 次','+10 分'],['self_improvement','复盘','4 次','-8 分'],['directions_run','晨练','3 次','+11 分'],['restaurant','早餐完成','6 天','+9 分'],['done_all','打卡率','82 %','+12 分'],['mood','状态稳定','74 分','+8 分'],['favorite','HRV','38 毫秒','-7 分']]};
+const actions={健康:[['🗓️','今晚 23:00 前入睡','建提醒','+12 分'],['🍗','今日脂肪摄入小于 100 克','记饮食','+10 分'],['🏃','慢跑 10 分钟','去训练','+9 分']],减脂:[['🍽️','今日脂肪摄入小于 90 克','记饮食','+11 分'],['🚶','快走 20 分钟','去训练','+9 分'],['🏋️','完成上肢力量训练','建计划','+8 分']],习惯:[['⏰','设置喝水提醒','建提醒','+10 分'],['🧘','睡前 5 分钟复盘','去记录','+9 分'],['🚶','晚饭后散步 15 分钟','去完成','+8 分']]};
+let active=0;let isCompact=false;let haptics=null;let scrollEndTimer=null;let programmaticTarget=-1;const app=document.getElementById('app');const topEl=document.querySelector('.top');const scores=document.getElementById('scores');const slider=document.getElementById('slider');const content=document.getElementById('content');const bubbleWrap=document.getElementById('bubbleWrap');const bubbleText=document.getElementById('bubbleText');
+const scoreRefs=[];let scoreIndicator=null;
+const actionKeyByIndex=['健康','减脂','习惯'];
+function getActionGain(idx){const list=actions[actionKeyByIndex[idx]]||[];return list.reduce((s,row)=>{const m=String(row[3]||'').match(/([+-]?\d+)/);return s+(m?Number(m[1]):0);},0);}
+function hexToRgba(hex,a){const h=String(hex||'').replace('#','');if(h.length!==6)return `rgba(132,111,254,${a})`;const n=parseInt(h,16);const r=(n>>16)&255;const g=(n>>8)&255;const b=n&255;return `rgba(${r},${g},${b},${a})`;}
+function tintHex(hex,t=0.84){const h=String(hex||'').replace('#','');if(h.length!==6)return '#e5defe';const n=parseInt(h,16);const r=(n>>16)&255;const g=(n>>8)&255;const b=n&255;const rr=Math.round(r+(255-r)*t);const gg=Math.round(g+(255-g)*t);const bb=Math.round(b+(255-b)*t);return `rgb(${rr}, ${gg}, ${bb})`;}
+function updateBubbleTheme(){const c=tabs[active]?.color||'#6f63ff';app.style.setProperty('--bubble-bg',tintHex(c,.84));app.style.setProperty('--bubble-fg',hexToRgba(c,.92));}
+async function initHaptics(){try{const mod=await import('https://cdn.jsdelivr.net/npm/web-haptics/+esm');haptics=new mod.WebHaptics({debug:false,showSwitch:false});}catch{}}
+function triggerTabHaptic(){if(haptics){haptics.trigger('nudge');return;}if(navigator.vibrate){navigator.vibrate(18);}}
+function setActiveTab(i,{haptic=false}={}){if(i===active)return;active=i;if(haptic)triggerTabHaptic();playActiveRingBounce();}
+function getNearestPanelIndex(){const w=slider.clientWidth||1;const raw=(slider.scrollLeft/w);const idx=Math.floor(raw+0.5);return Math.max(0,Math.min(tabs.length-1,idx));}
+function buildScores(){scores.innerHTML='';scoreIndicator=document.createElement('div');scoreIndicator.className='score-indicator';scores.appendChild(scoreIndicator);tabs.forEach((t,i)=>{const menu=i===1?`<span class="score-menu-wrap"><span class="material-symbols-rounded score-mark" aria-hidden="true">keyboard_arrow_down</span><select class="score-menu" aria-label="减脂模式" data-role="fat-menu"><option>减脂</option><option>增肌</option><option>提示跑步能力</option></select></span>`:'';const ring=`<svg class="ring-svg" viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="45"></circle><circle class="ring-prog" cx="50" cy="50" r="45" style="--pct:${t.pct};--c:${t.color}"></circle></svg>`;const slot=document.createElement('div');slot.className='score-slot';slot.innerHTML=`<button class="score-tab" style="--c:${t.color}"><span class="score-state-lg"><span class="score-lg-ring">${ring}<span class="score-lg-text"><span class="score-name"><span class="score-label">${t.name}</span>${menu}</span><span class="score-value-lg">${t.score}</span></span></span></span><span class="score-state-sm"><span class="score-sm-wrap"><span class="score-sm-ring">${ring}<span class="score-sm-value">${t.score}</span></span><span class="score-label-sm">${t.name}</span></span></span></button>`;slot.onclick=()=>{programmaticTarget=i;setActiveTab(i,{haptic:true});slider.scrollTo({left:slider.clientWidth*i,behavior:'smooth'});applyState();};scores.appendChild(slot);scoreRefs.push({slot,progs:slot.querySelectorAll('.ring-prog'),tab:slot.querySelector('.score-tab')});const select=slot.querySelector('[data-role=\"fat-menu\"]');if(select){select.addEventListener('click',(e)=>e.stopPropagation());select.addEventListener('change',(e)=>{const v=e.target.value;if(v==='增肌'){tabs[1].name='增肌';}else if(v==='提示跑步能力'){tabs[1].name='跑步能力';}else{tabs[1].name='减脂';}const labelNode=slot.querySelector('.score-label');const smallLabelNode=slot.querySelector('.score-label-sm');if(labelNode){labelNode.textContent=tabs[1].name;}if(smallLabelNode){smallLabelNode.textContent=tabs[1].name;} });}});}
+function updateIndicator(){if(!scoreIndicator)return;const compact=app.classList.contains('compact');if(!compact){scoreIndicator.style.opacity='0';return;}const rootRect=scores.getBoundingClientRect();const slotRect=scoreRefs[active].slot.getBoundingClientRect();const width=Math.max(92,slotRect.width-14);const x=(slotRect.left-rootRect.left)+(slotRect.width-width)/2;scoreIndicator.style.width=`${width}px`;scoreIndicator.style.transform=`translate3d(${x}px,-50%,0)`;scoreIndicator.style.opacity='1';}
+function updateScores(boost=false){
+  scoreRefs.forEach((ref,i)=>{
+    ref.slot.classList.toggle('active',i===active);
+    const gain=(boost&&i===active)?getActionGain(i):0;
+    const nextScore=Math.min(100,tabs[i].score+gain);
+    const pct=Math.min(100,tabs[i].pct+gain);
+    ref.progs.forEach((p)=>p.style.setProperty('--pct',String(pct)));
+    const lg=ref.slot.querySelector('.score-value-lg');
+    const sm=ref.slot.querySelector('.score-sm-value');
+    if(lg)lg.textContent=String(nextScore);
+    if(sm)sm.textContent=String(nextScore);
+  });
+  updateIndicator();
+}
+function updateBubbleArrow(){
+  const arrow=bubbleWrap.querySelector('.bubble-arrow');
+  const activeRef=scoreRefs[active];
+  if(!arrow||!activeRef)return;
+  const wrapRect=bubbleWrap.getBoundingClientRect();
+  const ring=activeRef.tab.querySelector(app.classList.contains('compact')?'.score-sm-ring':'.score-lg-ring');
+  const ringRect=(ring||activeRef.tab).getBoundingClientRect();
+  const center=ringRect.left+ringRect.width/2;
+  const x=center-wrapRect.left-arrow.offsetWidth/2;
+  const clamped=Math.max(12,Math.min(wrapRect.width-arrow.offsetWidth-12,x));
+  arrow.style.marginLeft=`${Math.round(clamped)}px`;
+}
+function playActiveRingBounce(){if(app.classList.contains('compact'))return;const ref=scoreRefs[active];if(!ref||!ref.tab)return;ref.tab.classList.remove('bounce');void ref.tab.offsetWidth;ref.tab.classList.add('bounce');}
+function renderPanels(){slider.innerHTML='';tabs.forEach(t=>{const panel=document.createElement('section');panel.className='panel';panel.innerHTML=`<div class="section-title">影响因素</div><div class="factors">${factors[t.name].map(([ico,name,value,delta])=>`<div class="factor-card"><div class="factor-left"><div class="factor-type"><span class="material-symbols-rounded">${ico}</span>${name}</div><div class="factor-val">${value}</div></div><div class="delta ${delta.startsWith('-')?'minus':'plus'}">${delta}</div></div>`).join('')}</div><div class="more"><span class="material-symbols-rounded">sort</span>查看更多</div><div class="section-title">下一步行动</div><div class="actions">${actions[t.name].map(([ico,title,btn,gain])=>`<div class="action-row"><div class="action-icon">${ico}</div><div class="action-main"><div><div class="action-title">${title}</div><span class="action-tag">${gain}</span></div><button class="action-btn">${btn}</button></div></div>`).join('')}</div><div class="ai-footer">AI 教练由 Keepace.ai™ 运动模型驱动</div><div class="panel-tail"></div>`;slider.appendChild(panel);});}
+function syncTailSpace(){const tails=slider.querySelectorAll('.panel-tail');const topNeed=Math.round(topEl.getBoundingClientRect().height*0.95);const screenNeed=Math.round(content.clientHeight*0.62);const h=Math.max(260,topNeed,screenNeed);tails.forEach(t=>t.style.setProperty('--tail-h',`${h}px`));}
+function applyState(){const y=content.scrollTop;if(isCompact){if(y<10)isCompact=false;}else{if(y>22)isCompact=true;}app.classList.toggle('compact',isCompact);const panel=slider.children[active];const titles=panel?panel.querySelectorAll('.section-title'):null;const actionTitle=titles&&titles[1]?titles[1]:null;const root=content.getBoundingClientRect();const triggerY=root.top+root.height*0.25;const titleTop=actionTitle?actionTitle.getBoundingClientRect().top:Infinity;const showBoost=titleTop<=triggerY;app.classList.toggle('boost',showBoost);bubbleWrap.classList.toggle('show',showBoost);updateBubbleTheme();if(showBoost){bubbleText.textContent=`✦ 完成行动，预计增加 ${getActionGain(active)} 分`;}updateScores(showBoost);updateBubbleArrow();}
+renderPanels();buildScores();syncTailSpace();applyState();initHaptics();slider.addEventListener('scroll',()=>{clearTimeout(scrollEndTimer);scrollEndTimer=setTimeout(()=>{const i=getNearestPanelIndex();if(programmaticTarget>=0){if(i===programmaticTarget){programmaticTarget=-1;}applyState();return;}if(i!==active){setActiveTab(i,{haptic:true});}applyState();},80);applyState();},{passive:true});content.addEventListener('scroll',applyState,{passive:true});window.addEventListener('resize',()=>{syncTailSpace();applyState();});
+</script>
+</body>
+</html>
